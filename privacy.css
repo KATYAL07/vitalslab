@@ -1,0 +1,86 @@
+:root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --border: #d1d5db;
+      --t1: #111827;
+      --t2: #4b5563;
+      --t3: #6b7280;
+      --radius: 4px;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--t1);
+      font-family: var(--sans);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: var(--t1); text-decoration: underline; }
+    .nav {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+    }
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand-name { font-weight: 700; font-size: 16px; text-decoration: none; color: var(--t1); }
+    .nav-links { display: flex; gap: 14px; }
+    .nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--t2);
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: var(--radius);
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--t1);
+      background: #f3f4f6;
+    }
+    main {
+      flex: 1;
+      max-width: 900px;
+      width: 100%;
+      margin: 28px auto;
+      padding: 0 24px;
+    }
+    .policy-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    h1 { font-size: 24px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .meta { font-size: 13px; color: var(--t3); }
+    h2 { font-size: 16px; font-weight: 700; margin-top: 10px; }
+    p { font-size: 14px; color: var(--t2); }
+    ul { margin-left: 20px; font-size: 14px; color: var(--t2); display: flex; flex-direction: column; gap: 6px; }
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      margin-top: auto;
+      font-size: 13px;
+      color: var(--t2);
+    }
+    .footer-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }

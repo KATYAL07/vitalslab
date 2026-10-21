@@ -61,6 +61,21 @@ python -m http.server 3000
 
 Open `http://localhost:3000` in your browser.
 
+### Terminal CLI Usage
+
+VitalsLab includes a built-in terminal CLI auditor and test suite:
+
+```bash
+# Run terminal performance audit
+node cli.js --profile saas
+
+# Generate unified git remediation patch
+node cli.js --profile saas --patch
+
+# Run engine test suite
+node tests.js
+```
+
 ---
 
 ## Author
