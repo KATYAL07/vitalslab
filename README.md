@@ -1,4 +1,4 @@
-# AstroPulse (`astroapp`)
+# VitalsLab an astro app
 
 > **Web Architecture, SEO, and Performance Auditor for Modern Web Applications**  
 > Developed and maintained by **Arnav Katyal**
