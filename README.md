@@ -1,9 +1,9 @@
-# VitalsLab an astro app
+# VitalsLab
 
-> **Web Architecture, SEO, and Performance Auditor for Modern Web Applications**  
+> **Core Web Vitals, Accessibility, and Performance Auditor for Modern Web Applications**
 > Developed and maintained by **Arnav Katyal**
 
-[![GitHub Pages](https://img.shields.io/badge/Deployment-GitHub%20Pages-black?style=flat-square&logo=github)](https://katyal07.github.io/astroapp/)
+[![Live Demo](https://img.shields.io/badge/Live-GitHub%20Pages-black?style=flat-square&logo=github)](https://katyal07.github.io/vitalslab/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-black?style=flat-square)](LICENSE)
 [![Standards: WCAG 2.2](https://img.shields.io/badge/Accessibility-WCAG%202.2%20AA-success?style=flat-square)](#wcag-22-color-contrast-lab)
 
@@ -11,7 +11,7 @@
 
 ## Overview
 
-**VitalsLab** is a lightweight, zero-runtime engineering auditor designed to analyze web applications built with **Astro** and modern frontend architectures. It runs completely inside the browser client, evaluating Core Web Vitals, accessibility compliance, island hydration overhead, and SEO metadata without sending payloads to external servers.
+**VitalsLab** is a lightweight, zero-runtime engineering auditor designed to analyze web applications built with Astro and modern frontend architectures. It runs completely inside the browser, evaluating Core Web Vitals, accessibility compliance, island hydration overhead, and SEO metadata without sending data to external servers.
 
 ---
 
@@ -34,30 +34,28 @@
 - Generates clean, ready-to-apply unified Git patches and code snippets directly inside the interface.
 - One-click copy for fast remediation.
 
-### 5. SERP & OpenGraph Social Card Preview
+### 5. SERP and OpenGraph Social Card Preview
 - Real-time simulation of Google Search Engine Result Page (SERP) snippets.
 - OpenGraph preview for LinkedIn, Twitter / X, and Discord social cards.
 
 ---
 
-## Privacy & Security Architecture
+## Privacy and Security
 
-- **100% Client-Side Execution**: All audits, heuristic simulations, and contrast computations occur strictly within the client browser sandbox.
-- **No Remote Telemetry**: Tested endpoints, local URLs, and report payloads are never transmitted to external monitoring or analytics servers.
-- **Zero Profiling / No Tracking Cookies**: Does not store persistent cross-site tracking cookies.
-- See the full [Privacy Policy](privacy.html) for detailed disclosures.
+- **100% Client-Side Execution**: All audits, simulations, and contrast computations run strictly within the browser sandbox.
+- **No Remote Telemetry**: URLs, inputs, and report payloads are never transmitted to external servers.
+- **Zero Profiling / No Tracking Cookies**: No persistent cross-site tracking cookies.
+- See the full [Privacy Policy](privacy.html) for details.
 
 ---
 
 ## Getting Started
 
-### Local Setup
-
-Simply clone the repository and open `index.html` in any modern web browser or serve it with Python:
+Clone the repository and serve locally:
 
 ```bash
-git clone https://github.com/KATYAL07/astroapp.git
-cd astroapp
+git clone https://github.com/KATYAL07/vitalslab.git
+cd vitalslab
 python -m http.server 3000
 ```
 
@@ -65,7 +63,6 @@ Open `http://localhost:3000` in your browser.
 
 ---
 
-## Author & Maintainer
+## Author
 
-- **Arnav Katyal**  
-  GitHub: [@KATYAL07](https://github.com/KATYAL07)
+- **Arnav Katyal** -- [@KATYAL07](https://github.com/KATYAL07)
