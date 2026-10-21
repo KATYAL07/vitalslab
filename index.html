@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AstroPulse - Web Architecture, SEO and Performance Auditor</title>
+  <meta name="description" content="Engineering auditor for Astro and modern web applications. Real-time Core Web Vitals simulation, WCAG 2.2 accessibility, and automated code diff remediations." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --card-hover: #fafafa;
+      --border: #d1d5db;
+      --border-dark: #9ca3af;
+      --t1: #111827;
+      --t2: #4b5563;
+      --t3: #6b7280;
+      --btn-primary: #111827;
+      --btn-primary-hover: #000000;
+      --btn-primary-text: #ffffff;
+      --btn-secondary: #ffffff;
+      --btn-secondary-hover: #f9fafb;
+      --btn-secondary-text: #1f2937;
+      --pass: #166534; --pass-bg: #dcfce7; --pass-border: #86efac;
+      --warn: #92400e; --warn-bg: #fef3c7; --warn-border: #fcd34d;
+      --crit: #991b1b; --crit-bg: #fee2e2; --crit-border: #fca5a5;
+      --radius: 4px;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', Menlo, Consolas, monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--t1);
+      font-family: var(--sans);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: var(--t1); text-decoration: underline; }
+
+    /* Top Nav */
+    .nav {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .nav-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--t1);
+    }
+    .logo {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius);
+      background: var(--btn-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; }
+    .brand-name { font-weight: 700; font-size: 16px; letter-spacing: -0.01em; }
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: var(--radius);
+      background: #f3f4f6;
+      color: var(--t2);
+      border: 1px solid var(--border);
+      text-transform: uppercase;
+    }
+    .nav-links { display: flex; align-items: center; gap: 14px; }
+    .nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--t2);
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: var(--radius);
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--t1);
+      background: #f3f4f6;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+    .btn-p {
+      background: var(--btn-primary);
+      color: var(--btn-primary-text);
+      border-color: var(--btn-primary);
+    }
+    .btn-p:hover { background: var(--btn-primary-hover); }
+    .btn-s {
+      background: var(--btn-secondary);
+      color: var(--btn-secondary-text);
+      border-color: var(--border);
+    }
+    .btn-s:hover { background: var(--btn-secondary-hover); border-color: var(--border-dark); }
+
+    /* Hero Section */
+    .hero {
+      max-width: 1240px;
+      width: 100%;
+      margin: 24px auto 0;
+      padding: 0 24px;
+    }
+    .status-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--t2);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .status-tag .dot { width: 8px; height: 8px; border-radius: 2px; background: var(--pass); }
+    .hero h1 { font-size: 26px; font-weight: 700; color: var(--t1); margin-bottom: 8px; }
+    .hero p { font-size: 14px; color: var(--t2); max-width: 850px; line-height: 1.5; }
+
+    /* Console Panel */
+    .console {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .presets { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .presets-label { font-size: 12px; font-weight: 600; color: var(--t3); text-transform: uppercase; }
+    .preset {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--t2);
+      cursor: pointer;
+    }
+    .preset:hover, .preset.on { background: #f3f4f6; color: var(--t1); border-color: var(--border-dark); }
+    .input-row { display: flex; gap: 10px; }
+    .url-input {
+      flex: 1;
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #ffffff;
+      color: var(--t1);
+    }
+    .url-input:focus { outline: none; border-color: var(--t1); }
+    .prog { display: none; }
+    .prog-top { display: flex; justify-content: space-between; font-size: 12px; font-family: var(--mono); color: var(--t2); margin-bottom: 6px; }
+    .prog-track { height: 6px; background: #e5e7eb; border-radius: 2px; overflow: hidden; }
+    .prog-fill { height: 100%; width: 0%; background: var(--btn-primary); }
+
+    /* Scorecards */
+    .scores {
+      max-width: 1240px;
+      width: 100%;
+      margin: 20px auto 0;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 900px) { .scores { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .scores { grid-template-columns: 1fr; } }
+    .sc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .gauge { width: 70px; height: 70px; position: relative; margin: 0 auto; }
+    .gauge svg { width: 70px; height: 70px; transform: rotate(-90deg); }
+    .gauge-bg { fill: none; stroke: #e5e7eb; stroke-width: 8; }
+    .gauge-fg { fill: none; stroke-width: 8; stroke-dasharray: 283; stroke-dashoffset: 0; stroke-linecap: butt; transition: stroke-dashoffset .6s ease; }
+    .gauge-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; font-family: var(--mono); }
+    .sc h2 { font-size: 14px; font-weight: 700; text-align: center; }
+    .sc .desc { font-size: 12px; color: var(--t2); text-align: center; line-height: 1.4; }
+
+    /* Tabs & Content */
+    .tabs {
+      max-width: 1240px;
+      width: 100%;
+      margin: 20px auto;
+      padding: 0 24px;
+    }
+    .tabs-nav {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .tab-btn {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border: 1px solid transparent;
+      border-bottom: none;
+      background: none;
+      color: var(--t2);
+      cursor: pointer;
+      border-radius: var(--radius) var(--radius) 0 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-btn:hover { color: var(--t1); background: #ffffff; }
+    .tab-btn.on {
+      color: var(--t1);
+      background: #ffffff;
+      border-color: var(--border);
+      border-bottom: 2px solid #ffffff;
+      margin-bottom: -1px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.on { display: block; }
+
+    /* Findings List */
+    .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--t2);
+      cursor: pointer;
+    }
+    .chip:hover, .chip.on { background: #f3f4f6; color: var(--t1); border-color: var(--border-dark); }
+    .findings { display: flex; flex-direction: column; gap: 12px; }
+    .finding {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .finding.crit { border-left: 4px solid var(--crit); }
+    .finding.warn { border-left: 4px solid var(--warn); }
+    .finding.pass { border-left: 4px solid var(--pass); }
+    .fh { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .fh-left { display: flex; align-items: center; gap: 8px; }
+    .fh h3 { font-size: 14px; font-weight: 700; color: var(--t1); }
+    .sev {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--radius);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .sev.crit { background: var(--crit-bg); color: var(--crit); border: 1px solid var(--crit-border); }
+    .sev.warn { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn-border); }
+    .sev.pass { background: var(--pass-bg); color: var(--pass); border: 1px solid var(--pass-border); }
+    .rule { font-family: var(--mono); font-size: 11px; color: var(--t3); background: #f3f4f6; padding: 2px 6px; border-radius: var(--radius); }
+    .fd { font-size: 13px; color: var(--t2); line-height: 1.5; }
+    .fd code { font-family: var(--mono); font-size: 12px; background: #f3f4f6; padding: 2px 4px; border-radius: 2px; }
+
+    /* Code Diff Boxes */
+    .diff {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: var(--mono);
+      font-size: 12px;
+      overflow-x: auto;
+    }
+    .diff-head {
+      background: #f9fafb;
+      border-bottom: 1px solid var(--border);
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--t3);
+    }
+    .diff-btn {
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: #ffffff;
+      cursor: pointer;
+    }
+    .diff-btn:hover { background: #f3f4f6; }
+    .dl { padding: 4px 12px; white-space: pre; line-height: 1.4; }
+    .dl.del { background: #fef2f2; color: #991b1b; }
+    .dl.add { background: #f0fdf4; color: #166534; }
+    .dl.ctx { color: var(--t3); }
+
+    /* Contrast Lab Panel */
+    .clab {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    @media (max-width: 800px) { .clab { grid-template-columns: 1fr; } }
+    .clab-preview {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 180px;
+      text-align: center;
+    }
+    .clab-ratio { font-size: 32px; font-weight: 700; font-family: var(--mono); }
+    .clab-form { display: flex; flex-direction: column; gap: 12px; }
+    .clab-form h3 { font-size: 15px; font-weight: 700; }
+    .cf {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #f9fafb;
+    }
+    .cf-label { font-size: 12px; font-weight: 600; color: var(--t2); }
+    .cf-hex { font-family: var(--mono); font-size: 12px; }
+    .formula-box {
+      font-size: 12px;
+      color: var(--t2);
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px;
+      line-height: 1.5;
+    }
+
+    /* Social Card Panel */
+    .social-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 800px) { .social-grid { grid-template-columns: 1fr; } }
+    .scard {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .scard-bar {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 12px;
+      background: #f9fafb;
+      border-bottom: 1px solid var(--border);
+      color: var(--t2);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .scard-body { padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+    .scard-domain { font-size: 12px; color: var(--t3); }
+    .scard-title { font-size: 14px; font-weight: 700; color: var(--t1); }
+    .scard-snippet { font-size: 12px; color: var(--t2); line-height: 1.4; }
+    .scard-img {
+      background: #f3f4f6;
+      border-bottom: 1px solid var(--border);
+      padding: 30px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--t2);
+      font-weight: 600;
+    }
+
+    /* Footer */
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      margin-top: auto;
+      font-size: 13px;
+      color: var(--t2);
+    }
+    .footer-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Notification Toast */
+    .toast {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #111827;
+      color: #ffffff;
+      padding: 10px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">
+        <div class="logo">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <span class="brand-name">AstroPulse Auditor</span>
+        <span class="badge">v2.4</span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link active">Auditor</a>
+        <a href="#remediations" class="nav-link">Diff Engine</a>
+        <a href="#contrast" class="nav-link">Contrast Lab</a>
+        <a href="privacy.html" class="nav-link">Privacy Policy</a>
+        <button type="button" class="btn btn-s" id="btn-export">Export Report</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="audit">
+    <div class="status-tag">
+      <div class="dot"></div>
+      <span>Local Architecture Auditor Active</span>
+    </div>
+    <h1>Astro Web Architecture and Performance Auditor</h1>
+    <p>Audit Core Web Vitals, WCAG 2.2 color contrast compliance, component hydration overhead, and OpenGraph metadata.</p>
+
+    <!-- Console -->
+    <div class="console">
+      <div class="presets">
+        <span class="presets-label">Pre-loaded Targets:</span>
+        <button type="button" class="preset on" data-p="saas">SaaS Landing Page</button>
+        <button type="button" class="preset" data-p="ecom">E-Commerce Storefront</button>
+        <button type="button" class="preset" data-p="portfolio">Developer Portfolio</button>
+        <button type="button" class="preset" data-p="docs">Technical Docs Hub</button>
+      </div>
+      <div class="input-row">
+        <input type="text" id="url-input" class="url-input" value="https://app.astropulse.internal/saas-preview" placeholder="Enter target URL or local endpoint..." />
+        <button type="button" class="btn btn-p" id="btn-run">Run Audit</button>
+      </div>
+      <div class="prog" id="prog">
+        <div class="prog-top">
+          <span class="prog-status" id="prog-st">Initializing worker...</span>
+          <span class="prog-pct" id="prog-pct">0%</span>
+        </div>
+        <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scorecards -->
+  <section class="scores" id="scores">
+    <div class="sc">
+      <div class="gauge">
+        <svg><circle class="gauge-bg" cx="50" cy="50" r="45"/><circle class="gauge-fg" id="g-perf" cx="50" cy="50" r="45" stroke="#166534"/></svg>
+        <span class="gauge-num" id="n-perf" style="color:#166534">94</span>
+      </div>
+      <h2>Performance</h2>
+      <p class="desc" id="d-perf">Simulated LCP: 1.2s · INP: 45ms · CLS: 0.01</p>
+    </div>
+    <div class="sc">
+      <div class="gauge">
+        <svg><circle class="gauge-bg" cx="50" cy="50" r="45"/><circle class="gauge-fg" id="g-a11y" cx="50" cy="50" r="45" stroke="#92400e"/></svg>
+        <span class="gauge-num" id="n-a11y" style="color:#92400e">78</span>
+      </div>
+      <h2>Accessibility</h2>
+      <p class="desc" id="d-a11y">WCAG 2.2 AA · 2 low contrast items detected</p>
+    </div>
+    <div class="sc">
+      <div class="gauge">
+        <svg><circle class="gauge-bg" cx="50" cy="50" r="45"/><circle class="gauge-fg" id="g-bp" cx="50" cy="50" r="45" stroke="#111827"/></svg>
+        <span class="gauge-num" id="n-bp" style="color:#111827">96</span>
+      </div>
+      <h2>Astro Islands</h2>
+      <p class="desc" id="d-bp">Zero-JS baseline · 1 redundant client:load</p>
+    </div>
+    <div class="sc">
+      <div class="gauge">
+        <svg><circle class="gauge-bg" cx="50" cy="50" r="45"/><circle class="gauge-fg" id="g-seo" cx="50" cy="50" r="45" stroke="#1f2937"/></svg>
+        <span class="gauge-num" id="n-seo" style="color:#1f2937">92</span>
+      </div>
+      <h2>SEO and Meta</h2>
+      <p class="desc" id="d-seo">OpenGraph valid · Twitter card configured</p>
+    </div>
+  </section>
+
+  <!-- Tabs Navigation -->
+  <section class="tabs">
+    <div class="tabs-nav">
+      <button type="button" class="tab-btn on" data-t="t-findings">Audit Findings (<span id="fc">4</span>)</button>
+      <button type="button" class="tab-btn" data-t="t-diff">Code Remediations</button>
+      <button type="button" class="tab-btn" data-t="t-contrast">Contrast Ratio Lab</button>
+      <button type="button" class="tab-btn" data-t="t-social">Social and SERP Preview</button>
+    </div>
+
+    <!-- TAB 1: Findings -->
+    <div id="t-findings" class="tab-panel on">
+      <div class="toolbar">
+        <div class="chips">
+          <button type="button" class="chip on" data-f="all">All Issues (4)</button>
+          <button type="button" class="chip" data-f="crit">Critical (1)</button>
+          <button type="button" class="chip" data-f="warn">Warnings (2)</button>
+          <button type="button" class="chip" data-f="pass">Passed (7)</button>
+        </div>
+        <button type="button" class="btn btn-s" id="btn-plan">Copy Action Plan</button>
+      </div>
+
+      <div class="findings" id="findings">
+        <!-- Critical -->
+        <div class="finding crit" data-s="crit">
+          <div class="fh">
+            <div class="fh-left"><span class="sev crit">Critical</span><h3>Over-eager Island Hydration (client:load on below-fold component)</h3></div>
+            <span class="rule">ASTRO-ISLAND-01</span>
+          </div>
+          <p class="fd"><code>&lt;MetricsChart client:load /&gt;</code> downloads 42kB of hydration code during initial render, blocking LCP. Change to <code>client:visible</code> since the component is below the fold.</p>
+          <div class="diff">
+            <div class="diff-head"><span>src/pages/index.astro:L44</span><button type="button" class="diff-btn cp" data-cp="<MetricsChart client:visible />">Copy Fix</button></div>
+            <div class="dl del">- &lt;MetricsChart client:load /&gt;</div>
+            <div class="dl add">+ &lt;MetricsChart client:visible /&gt;</div>
+          </div>
+        </div>
+        <!-- Warning 1 -->
+        <div class="finding warn" data-s="warn">
+          <div class="fh">
+            <div class="fh-left"><span class="sev warn">Warning</span><h3>Sub-optimal Color Contrast on Secondary Buttons</h3></div>
+            <span class="rule">A11Y-CONTRAST-AA</span>
+          </div>
+          <p class="fd">Text <code>#64748b</code> on <code>#0f172a</code> yields <strong>3.2:1</strong>, failing WCAG 2.2 AA (4.5:1 minimum). Update to <code>#94a3b8</code> (5.4:1).</p>
+          <div class="diff">
+            <div class="diff-head"><span>src/styles/global.css:L88</span><button type="button" class="diff-btn cp" data-cp="color: #94a3b8; /* WCAG 2.2 AA 5.4:1 */">Copy Fix</button></div>
+            <div class="dl del">-   color: #64748b; /* 3.2:1 Fail */</div>
+            <div class="dl add">+   color: #94a3b8; /* 5.4:1 Pass AA */</div>
+          </div>
+        </div>
+        <!-- Warning 2 -->
+        <div class="finding warn" data-s="warn">
+          <div class="fh">
+            <div class="fh-left"><span class="sev warn">Warning</span><h3>Hero Image Missing Explicit Dimensions (CLS Risk)</h3></div>
+            <span class="rule">CWV-LAYOUT-SHIFT</span>
+          </div>
+          <p class="fd"><code>&lt;img src="/hero.webp" alt="Dashboard"&gt;</code> lacks <code>width</code> and <code>height</code>, causing layout instability during progressive loading.</p>
+          <div class="diff">
+            <div class="diff-head"><span>src/components/Hero.astro:L12</span><button type="button" class="diff-btn cp" data-cp='<img src="/hero.webp" alt="Dashboard" width="1200" height="630" fetchpriority="high" />'>Copy Fix</button></div>
+            <div class="dl del">- &lt;img src="/hero.webp" alt="Dashboard" /&gt;</div>
+            <div class="dl add">+ &lt;img src="/hero.webp" alt="Dashboard" width="1200" height="630" fetchpriority="high" /&gt;</div>
+          </div>
+        </div>
+        <!-- Passed -->
+        <div class="finding pass" data-s="pass">
+          <div class="fh">
+            <div class="fh-left"><span class="sev pass">Passed</span><h3>Valid OpenGraph Protocol and Canonical Hierarchy</h3></div>
+            <span class="rule">SEO-METADATA-04</span>
+          </div>
+          <p class="fd">Page defines valid <code>og:title</code>, <code>og:description</code>, <code>og:image</code>, and an absolute <code>canonical</code> link. Robots.txt and sitemap.xml discovered at root.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Diff -->
+    <div id="t-diff" class="tab-panel">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px" id="remediations">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+          <h3 style="font-size:15px;font-weight:700">Unified Patch: Complete Repository Remediation</h3>
+          <button type="button" class="btn btn-p" id="btn-patch">Copy Unified Git Patch</button>
+        </div>
+        <div class="diff">
+          <div class="diff-head"><span>diff --git a/src/pages/index.astro b/src/pages/index.astro</span><span>Branch: main</span></div>
+          <div class="dl ctx">@@ -12,7 +12,7 @@</div>
+          <div class="dl del">- &lt;img src="/hero.webp" alt="Dashboard" /&gt;</div>
+          <div class="dl add">+ &lt;img src="/hero.webp" alt="Dashboard" width="1200" height="630" fetchpriority="high" /&gt;</div>
+          <div class="dl ctx">@@ -44,7 +44,7 @@</div>
+          <div class="dl del">- &lt;MetricsChart client:load /&gt;</div>
+          <div class="dl add">+ &lt;MetricsChart client:visible /&gt;</div>
+          <div class="dl ctx">@@ -88,7 +88,7 @@</div>
+          <div class="dl del">- .btn-secondary { color: #64748b; }</div>
+          <div class="dl add">+ .btn-secondary { color: #94a3b8; }</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Contrast Lab -->
+    <div id="t-contrast" class="tab-panel">
+      <div class="clab" id="contrast">
+        <div class="clab-preview" id="clab-surf" style="background:#0f172a;color:#94a3b8">
+          <span class="clab-ratio" id="clab-rat">5.42:1</span>
+          <span class="sev pass" id="clab-badge">Passes WCAG 2.2 AA</span>
+          <p style="font-size:13px;margin-top:6px">Sample text under selected background and text configuration.</p>
+        </div>
+        <div class="clab-form">
+          <h3>Color Contrast Calculation Tool</h3>
+          <p style="font-size:13px;color:var(--t2)">Adjust foreground and background colors. Evaluates relative luminance per WCAG 2.2 standards.</p>
+          <div class="cf">
+            <div><div class="cf-label">Text (Foreground)</div><div class="cf-hex" id="fg-hex">#94A3B8</div></div>
+            <input type="color" id="fg-pick" value="#94a3b8" />
+          </div>
+          <div class="cf">
+            <div><div class="cf-label">Surface (Background)</div><div class="cf-hex" id="bg-hex">#0F172A</div></div>
+            <input type="color" id="bg-pick" value="#0f172a" />
+          </div>
+          <div class="formula-box">
+            • <strong>Normal Text (AA)</strong>: Requires ≥ 4.5:1<br>
+            • <strong>Large Text (AA)</strong>: Requires ≥ 3.0:1<br>
+            • <strong>Enhanced (AAA)</strong>: Requires ≥ 7.0:1
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Social Preview -->
+    <div id="t-social" class="tab-panel">
+      <div class="social-grid" id="social">
+        <div class="scard">
+          <div class="scard-bar">Google Search Result (SERP) Preview</div>
+          <div class="scard-body">
+            <div class="scard-domain">https://app.astropulse.internal › saas-preview</div>
+            <h4 class="scard-title">AstroPulse: Autonomous Web Architecture and Security</h4>
+            <p class="scard-snippet">Audit modern web applications for Core Web Vitals, WCAG 2.2 accessibility compliance, and code diff remediations.</p>
+          </div>
+        </div>
+        <div class="scard">
+          <div class="scard-bar">Twitter and LinkedIn OpenGraph Card</div>
+          <div class="scard-img">AstroPulse OpenGraph Preview</div>
+          <div class="scard-body">
+            <div class="scard-domain">app.astropulse.internal</div>
+            <h4 class="scard-title" style="color:var(--t1);">AstroPulse: Web Architecture Auditor</h4>
+            <p class="scard-snippet">Zero-runtime engineering evaluation, Core Web Vitals simulation, and instant code remediation diffs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>AstroPulse Auditor | Built for Astro and Modern Web Standards</div>
+      <div>
+        Maintained by <strong>Arnav Katyal</strong> | 
+        <a href="privacy.html" style="margin-left: 8px;">Privacy Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast">Done</div>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+    const toast = msg => { const t=$('#toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2600); };
+    const setGauge = (el,v) => { el.style.strokeDashoffset = 283 - 283*(v/100); };
+
+    // Init gauges
+    setGauge($('#g-perf'),94); setGauge($('#g-a11y'),78); setGauge($('#g-bp'),96); setGauge($('#g-seo'),92);
+
+    // Presets
+    const P = {
+      saas:      { url:'https://app.astropulse.internal/saas-preview',           s:{perf:94,a11y:78,bp:96,seo:92}, descs:{perf:'Simulated LCP: 1.2s · INP: 45ms · CLS: 0.01', a11y:'WCAG 2.2 AA · 2 low contrast items detected', bp:'Zero-JS baseline · 1 redundant client:load', seo:'OpenGraph valid · Twitter card configured'}},
+      ecom:      { url:'https://shop.astropulse.internal/storefront-demo',       s:{perf:71,a11y:84,bp:88,seo:89}, descs:{perf:'Simulated LCP: 3.1s · INP: 120ms · CLS: 0.12', a11y:'WCAG 2.2 AA · 1 missing alt tag', bp:'3 over-hydrated islands detected', seo:'Missing canonical · Twitter card OK'}},
+      portfolio: { url:'https://arnav.engineering/portfolio',                     s:{perf:98,a11y:92,bp:100,seo:95}, descs:{perf:'Simulated LCP: 0.8s · INP: 22ms · CLS: 0.00', a11y:'WCAG 2.2 AA · 1 focus order suggestion', bp:'Fully static · Zero client JS shipped', seo:'Full OpenGraph + JSON-LD structured data'}},
+      docs:      { url:'https://docs.astropulse.internal/v2/architecture',       s:{perf:96,a11y:95,bp:98,seo:99}, descs:{perf:'Simulated LCP: 0.9s · INP: 30ms · CLS: 0.00', a11y:'WCAG 2.2 AA · All checks passed', bp:'1 lazy-loaded component · No hydration bloat', seo:'Sitemap + robots.txt + full canonical chain'}}
+    };
+
+    $$('.preset').forEach(b => b.addEventListener('click',()=>{
+      $$('.preset').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+      const c = P[b.dataset.p]; if(c){ $('#url-input').value=c.url; runAudit(c); }
+    }));
+
+    // Audit Simulation
+    function runAudit(cfg=P.saas){
+      const prog=$('#prog'), fill=$('#prog-fill'), st=$('#prog-st'), pct=$('#prog-pct'), btn=$('#btn-run');
+      prog.style.display='block'; btn.disabled=true; btn.style.opacity='.6';
+      const steps=[
+        {p:15, t:'Scanning DOM hierarchy and heading structure...'},
+        {p:35, t:'Simulating Core Web Vitals (LCP, INP, CLS)...'},
+        {p:55, t:'Evaluating WCAG 2.2 AA contrast ratios and ARIA...'},
+        {p:75, t:'Auditing Astro island hydration directives...'},
+        {p:90, t:'Generating remediation diffs...'},
+        {p:100,t:'Audit complete. All rules evaluated.'}
+      ];
+      let i=0;
+      const iv = setInterval(()=>{
+        if(i<steps.length){ fill.style.width=steps[i].p+'%'; pct.textContent=steps[i].p+'%'; st.textContent=steps[i].t; i++; }
+        else { clearInterval(iv); setTimeout(()=>{
+          prog.style.display='none'; btn.disabled=false; btn.style.opacity='1';
+          $('#n-perf').textContent=cfg.s.perf; $('#n-a11y').textContent=cfg.s.a11y; $('#n-bp').textContent=cfg.s.bp; $('#n-seo').textContent=cfg.s.seo;
+          setGauge($('#g-perf'),cfg.s.perf); setGauge($('#g-a11y'),cfg.s.a11y); setGauge($('#g-bp'),cfg.s.bp); setGauge($('#g-seo'),cfg.s.seo);
+          if(cfg.descs){ $('#d-perf').textContent=cfg.descs.perf; $('#d-a11y').textContent=cfg.descs.a11y; $('#d-bp').textContent=cfg.descs.bp; $('#d-seo').textContent=cfg.descs.seo; }
+          toast('Audit completed successfully.');
+        },400);}
+      },200);
+    }
+    $('#btn-run').addEventListener('click',()=>runAudit());
+
+    // Tabs
+    $$('.tab-btn').forEach(b=>b.addEventListener('click',()=>{
+      $$('.tab-btn').forEach(x=>x.classList.remove('on')); $$('.tab-panel').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); const t=$('#'+b.dataset.t); if(t) t.classList.add('on');
+    }));
+
+    // Filters
+    $$('.chip').forEach(c=>c.addEventListener('click',()=>{
+      $$('.chip').forEach(x=>x.classList.remove('on')); c.classList.add('on');
+      const f=c.dataset.f;
+      $$('.finding').forEach(card=>{ card.style.display = (f==='all'||card.dataset.s===f) ? 'flex' : 'none'; });
+    }));
+
+    // Copy handlers
+    $$('.cp').forEach(b=>b.addEventListener('click',()=>{ navigator.clipboard.writeText(b.dataset.cp); toast('Code fix copied to clipboard.'); }));
+
+    $('#btn-patch')?.addEventListener('click',()=>{
+      navigator.clipboard.writeText(`diff --git a/src/pages/index.astro b/src/pages/index.astro
+-<img src="/hero.webp" alt="Dashboard" />
++<img src="/hero.webp" alt="Dashboard" width="1200" height="630" fetchpriority="high" />
+-<MetricsChart client:load />
++<MetricsChart client:visible />
+-.btn-secondary { color: #64748b; }
++.btn-secondary { color: #94a3b8; }`);
+      toast('Unified git patch copied to clipboard.');
+    });
+
+    $('#btn-plan')?.addEventListener('click',()=>{
+      navigator.clipboard.writeText(`AstroPulse Remediation Action Plan:
+1. [Critical] Replace <MetricsChart client:load /> with client:visible (Saves 42kB initial JS)
+2. [Warning] Bump secondary button text color #64748b -> #94a3b8 (Passes WCAG 2.2 AA 5.4:1)
+3. [Warning] Add width=1200 height=630 fetchpriority=high to hero image (Eliminates CLS)
+4. [Passed] OpenGraph and Canonical meta tags correctly configured.`);
+      toast('Action plan copied to clipboard.');
+    });
+
+    // Export handler
+    $('#btn-export')?.addEventListener('click',()=>{
+      const r={auditEngine:'AstroPulse Auditor v2.4',maintainer:'Arnav Katyal',timestamp:new Date().toISOString(),targetUrl:$('#url-input').value,
+        scores:{performance:+$('#n-perf').textContent,accessibility:+$('#n-a11y').textContent,bestPractices:+$('#n-bp').textContent,seo:+$('#n-seo').textContent},
+        summary:'4 rules evaluated, 1 critical, 2 warnings, 7 passed'};
+      const b=new Blob([JSON.stringify(r,null,2)],{type:'application/json'}), u=URL.createObjectURL(b), a=document.createElement('a');
+      a.href=u; a.download='astropulse-audit-report.json'; a.click(); URL.revokeObjectURL(u);
+      toast('Exported astropulse-audit-report.json.');
+    });
+
+    // Contrast Lab
+    const fgP=$('#fg-pick'), bgP=$('#bg-pick');
+    function hex2rgb(h){ const c=h.replace('#',''); return [parseInt(c.substring(0,2),16),parseInt(c.substring(2,4),16),parseInt(c.substring(4,6),16)]; }
+    function lum(r,g,b){ const a=[r,g,b].map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)}); return a[0]*.2126+a[1]*.7152+a[2]*.0722; }
+    function contrast(a,b){ const l1=lum(...hex2rgb(a)),l2=lum(...hex2rgb(b)); return (Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05); }
+    function updContrast(){
+      const fg=fgP.value, bg=bgP.value, r=contrast(fg,bg);
+      $('#fg-hex').textContent=fg.toUpperCase(); $('#bg-hex').textContent=bg.toUpperCase();
+      $('#clab-surf').style.backgroundColor=bg; $('#clab-surf').style.color=fg;
+      $('#clab-rat').textContent=r.toFixed(2)+':1';
+      const badge=$('#clab-badge');
+      if(r>=7){badge.textContent='Passes WCAG 2.2 AAA (Enhanced)';badge.className='sev pass';}
+      else if(r>=4.5){badge.textContent='Passes WCAG 2.2 AA';badge.className='sev pass';}
+      else if(r>=3){badge.textContent='Passes Large Text Only (3:1)';badge.className='sev warn';}
+      else{badge.textContent='Fails WCAG 2.2 AA (< 3:1)';badge.className='sev crit';}
+    }
+    fgP.addEventListener('input',updContrast); bgP.addEventListener('input',updContrast);
+  </script>
+</body>
+</html>

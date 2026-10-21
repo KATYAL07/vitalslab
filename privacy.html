@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy - AstroPulse - Arnav Katyal</title>
+  <meta name="description" content="Privacy Policy for AstroPulse Auditor, maintained by Arnav Katyal." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --border: #d1d5db;
+      --t1: #111827;
+      --t2: #4b5563;
+      --t3: #6b7280;
+      --radius: 4px;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--t1);
+      font-family: var(--sans);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: var(--t1); text-decoration: underline; }
+    .nav {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+    }
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand-name { font-weight: 700; font-size: 16px; text-decoration: none; color: var(--t1); }
+    .nav-links { display: flex; gap: 14px; }
+    .nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--t2);
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: var(--radius);
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--t1);
+      background: #f3f4f6;
+    }
+    main {
+      flex: 1;
+      max-width: 900px;
+      width: 100%;
+      margin: 28px auto;
+      padding: 0 24px;
+    }
+    .policy-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    h1 { font-size: 24px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .meta { font-size: 13px; color: var(--t3); }
+    h2 { font-size: 16px; font-weight: 700; margin-top: 10px; }
+    p { font-size: 14px; color: var(--t2); }
+    ul { margin-left: 20px; font-size: 14px; color: var(--t2); display: flex; flex-direction: column; gap: 6px; }
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      margin-top: auto;
+      font-size: 13px;
+      color: var(--t2);
+    }
+    .footer-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand-name">AstroPulse Auditor</a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Auditor</a>
+        <a href="privacy.html" class="nav-link active">Privacy Policy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <article class="policy-box">
+      <h1>Privacy Policy</h1>
+      <div class="meta">
+        Project: AstroPulse Performance and Architecture Suite | Maintainer: Arnav Katyal | Effective Date: October 21, 2026
+      </div>
+
+      <h2>1. Overview and Scope</h2>
+      <p>
+        This Privacy Policy outlines how information is managed within the AstroPulse application, developed and maintained by Arnav Katyal. AstroPulse is an engineering tool designed to analyze Core Web Vitals, WCAG 2.2 accessibility compliance, and component hydration performance.
+      </p>
+
+      <h2>2. Client-Side and Local Processing</h2>
+      <p>
+        AstroPulse runs strictly within your local browser runtime. All audit checks, simulated metrics, contrast calculations, and diff remediations occur on the client machine:
+      </p>
+      <ul>
+        <li><strong>No External Telemetry:</strong> Tested URLs, audit inputs, and generated report payloads are not sent to any remote tracking or advertising server.</li>
+        <li><strong>No Profiling:</strong> We do not build user behavioral profiles, run third-party tracking scripts, or sell data.</li>
+        <li><strong>No Tracking Cookies:</strong> AstroPulse does not set persistent tracking or profiling cookies.</li>
+      </ul>
+
+      <h2>3. Data Export Functionality</h2>
+      <p>
+        When you choose to use the "Export Report" feature, an audit report file (astropulse-audit-report.json) is generated directly inside your browser using the standard Blob and object URL interfaces. This file is saved directly to your local file system.
+      </p>
+
+      <h2>4. Contact Information</h2>
+      <p>
+        For technical inquiries, bug reports, or project feedback, contact the maintainer:
+      </p>
+      <p>
+        <strong>Arnav Katyal</strong><br>
+        Project Developer and Maintainer
+      </p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>AstroPulse Auditor | Built for Astro and Modern Web Standards</div>
+      <div>
+        Maintained by <strong>Arnav Katyal</strong> | 
+        <a href="index.html" style="margin-left: 8px;">Auditor</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
