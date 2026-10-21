@@ -11,7 +11,7 @@
 
 ## Overview
 
-**AstroPulse** is a lightweight, zero-runtime engineering auditor designed to analyze web applications built with **Astro** and modern frontend architectures. It runs completely inside the browser client, evaluating Core Web Vitals, accessibility compliance, island hydration overhead, and SEO metadata without sending payloads to external servers.
+**VitalsLab** is a lightweight, zero-runtime engineering auditor designed to analyze web applications built with **Astro** and modern frontend architectures. It runs completely inside the browser client, evaluating Core Web Vitals, accessibility compliance, island hydration overhead, and SEO metadata without sending payloads to external servers.
 
 ---
 
